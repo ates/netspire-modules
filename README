@@ -11,3 +11,12 @@ mod_netflow_trace:
     Configuration:
     Add to dynamic modules section:
     {mod_netflow_trace, [{trace_dir, "/full/path/to/trace/directory"}]}
+
+mod_disconnect_pod:
+    Disconnect client via sending Radius Disconnect-Message (rfc3576) to NAS
+
+    Configuration:
+    Add to dynamic modules section:
+    {mod_disconnect_pod, []}
+
+
