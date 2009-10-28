@@ -34,7 +34,8 @@ run(Opts) ->
             Cmd = Script ++ " " ++ SID ++ " " ++ IP,
             ?INFO_MSG("Disconnecting ~s:~s~n", [SID, IP]),
             case call_external_prog(Cmd) of
-                {0, _} -> ok;
+                {0, _} ->
+                    ?INFO_MSG("Client ~s:~s was disconnected~n", [SID, IP]);
                 {N, Output} ->
                     ?ERROR_MSG("Disconnect failed. Exit code: ~p. Error: ~p~n",
                         [N, Output])
