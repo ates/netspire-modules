@@ -1,0 +1,33 @@
+SUBDIRS = src
+
+DESTDIR = @prefix@
+
+NETSPIRE_DIR = $(DESTDIR)@libdir@/netspire
+
+BEAMDIR = $(NETSPIRE_DIR)/ebin
+
+all: checks all-recursive
+
+checks:
+	test -d @NETSPIRE_DIST@/ebin || mkdir @NETSPIRE_DIST@/ebin
+
+all-recursive clean-recursive distclean-recursive install-recursive:
+	@subdirs="$(SUBDIRS)"; for subdir in $$subdirs; do \
+	target=`echo $@|sed 's,-recursive,,'`; \
+	echo making $$target in $$subdir; \
+	(cd $$subdir && $(MAKE) $$target) || exit 1; \
+	done
+
+install: all install-recursive
+	install -d $(BEAMDIR)
+
+clean: clean-recursive
+	rm -f erl_crash.dump
+	find . -name "*~" -exec rm -f {} \;
+
+distclean: clean clean-recursive distclean-recursive
+	rm -f config.status
+	rm -f config.log
+	rm -f Makefile
+	rm -f configure
+	rm -rf ebin autom4te.cache
