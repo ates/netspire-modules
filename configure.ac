@@ -7,7 +7,6 @@ AC_PROG_MAKE_SET
 AM_WITH_ERLANG
 AM_WITH_NETSPIRE
 
-# Change default prefix
 AC_PREFIX_DEFAULT(/usr/local/)
 
 AC_CONFIG_FILES([Makefile])
