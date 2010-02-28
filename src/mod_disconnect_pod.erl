@@ -6,7 +6,6 @@
 
 -include("netspire.hrl").
 -include("radius/radius.hrl").
--include("netspire_radius.hrl").
 
 -define(POD_DEFAULT_PORT, 3799).
 -define(DISCONNECT_REQUEST, 40).
@@ -18,13 +17,13 @@ start(_Options) ->
     netspire_hooks:add(disconnect_client, ?MODULE, disconnect).
 
 stop() ->
-    ?INFO_MSG("Stopping dynamic module ~p~n", [?MODULE]),
+    ?INFO_MSG("Stop dynamic module ~p~n", [?MODULE]),
     netspire_hooks:delete(disconnect_client, ?MODULE, disconnect).
 
 generate_packet(SID, IP, Secret) ->
     Ident = 0,
     Code = <<?DISCONNECT_REQUEST:8>>,
-    Attrs = radius:encode_attributes([{?ACCT_SESSION_ID, SID}, {?FRAMED_IP_ADDRESS, IP}]),
+    Attrs = radius:encode_attributes([{"Acct-Session-Id", SID}, {"Framed-IP-Address", IP}]),
     Length = <<(20 + byte_size(Attrs)):16>>,
     % Auth: Code + Ident + Length + 16 zero octets + Attrs + Secret
     Auth = erlang:md5([Code, Ident, Length, <<0:128>>, Attrs, Secret]),

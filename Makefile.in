@@ -22,7 +22,6 @@ install: all install-recursive
 	install -d $(BEAMDIR)
 
 clean: clean-recursive
-	rm -f erl_crash.dump
 	find . -name "*~" -exec rm -f {} \;
 
 distclean: clean clean-recursive distclean-recursive
