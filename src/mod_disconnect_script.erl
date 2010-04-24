@@ -3,7 +3,7 @@
 -behaviour(gen_module).
 
 %% API
--export([disconnect/1]).
+-export([disconnect/5]).
 
 %% gen_module callbacks
 -export([start/1, stop/0]).
@@ -19,17 +19,13 @@ stop() ->
     ?INFO_MSG("Stopping dynamic module ~p~n", [?MODULE]),
     netspire_hooks:delete(disconnect_client, ?MODULE, disconnect).
 
-disconnect(Session) ->
-    SID = Session#session.id,
-    IP = inet_parse:ntoa(Session#session.ip),
+disconnect(_, UserName, SID, IP, NasSpec) ->
+    {nas_spec, NasIP, _, _, _} = NasSpec,
     Script = gen_module:get_option(?MODULE, disconnect_script),
-    Cmd = Script ++ " " ++ SID ++ " " ++ IP,
-    ?INFO_MSG("Disconnecting ~s:~s~n", [SID, IP]),
+    Cmd = string:join([Script, UserName, SID, inet_parse:ntoa(IP), inet_parse:ntoa(NasIP)], " "),
     case call_external_prog(Cmd) of
-        {0, _} ->
-            ?INFO_MSG("Client ~s:~s was disconnected~n", [SID, IP]);
-        {N, Output} ->
-            ?ERROR_MSG("Disconnect failed. Exit code: ~p. Error: ~p~n", [N, Output])
+        {0, _} -> {ok, []};
+        {_, Output} -> {error, Output}
     end.
 
 call_external_prog(Cmd) ->
@@ -52,14 +48,14 @@ call_external_prog(Cmd, Dir, Env) ->
 
 get_data(P, D) ->
     receive
-    {P, {data, D1}} ->
-        get_data(P, [D1|D]);
-    {P, eof} ->
-        port_close(P),
-        receive
-        {P, {exit_status, N}} ->
-            {N, normalize(lists:flatten(lists:reverse(D)))}
-        end
+        {P, {data, D1}} ->
+            get_data(P, [D1|D]);
+        {P, eof} ->
+            port_close(P),
+            receive
+                {P, {exit_status, N}} ->
+                {N, normalize(lists:flatten(lists:reverse(D)))}
+            end
     end.
 
 normalize([$\r, $\n | Cs]) ->
