@@ -54,7 +54,7 @@ get_data(P, D) ->
             port_close(P),
             receive
                 {P, {exit_status, N}} ->
-                {N, normalize(lists:flatten(lists:reverse(D)))}
+                    {N, normalize(lists:flatten(lists:reverse(D)))}
             end
     end.
 
