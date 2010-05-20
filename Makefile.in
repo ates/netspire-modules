@@ -9,7 +9,7 @@ BEAMDIR = $(NETSPIRE_DIR)/ebin
 all: checks all-recursive
 
 checks:
-	test -d @NETSPIRE_DIST@/ebin || mkdir @NETSPIRE_DIST@/ebin
+	test -d ebin || mkdir ebin
 
 all-recursive clean-recursive distclean-recursive install-recursive:
 	@subdirs="$(SUBDIRS)"; for subdir in $$subdirs; do \
@@ -19,9 +19,10 @@ all-recursive clean-recursive distclean-recursive install-recursive:
 	done
 
 install: all install-recursive
-	install -d $(BEAMDIR)
+	install -m 644 ebin/*.beam $(BEAMDIR)
 
 clean: clean-recursive
+	rm -rf ebin
 	find . -name "*~" -exec rm -f {} \;
 
 distclean: clean clean-recursive distclean-recursive

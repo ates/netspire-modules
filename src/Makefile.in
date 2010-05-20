@@ -1,8 +1,8 @@
 SOURCES = $(wildcard *.erl)
-OUTDIR = ../@NETSPIRE_DIST@/ebin
+OUTDIR = ../ebin
 BEAMS = $(addprefix $(OUTDIR)/,$(SOURCES:.erl=.beam))
 
-EFLAGS = -I ../@NETSPIRE_DIST@/src -pa $(OUTDIR)
+EFLAGS = -I ../@NETSPIRE_DIST@/src -pa ../@NETSPIRE_DIST@/ebin
 
 BEAMDIR = @prefix@/@libdir@/netspire/ebin
 
