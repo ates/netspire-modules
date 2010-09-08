@@ -5,18 +5,10 @@ mod_disconnect_script:
     Add to dynamic modules section:
     {mod_disconnect_script, [{disconnect_script, "/full/path/to/script"}]}
 
-mod_netflow_trace:
-    Simple module for logging raw netflow data into files with rotation
-
-    Configuration:
-    Add to dynamic modules section:
-    {mod_netflow_trace, [{trace_dir, "/full/path/to/trace/directory"}]}
-
 mod_disconnect_pod:
     Disconnect client via sending Radius Disconnect-Message (rfc3576) to NAS
 
     Configuration:
     Add to dynamic modules section:
     {mod_disconnect_pod, []}
-
 
