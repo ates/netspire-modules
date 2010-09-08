@@ -4,16 +4,10 @@ BEAMS = $(addprefix $(OUTDIR)/,$(SOURCES:.erl=.beam))
 
 EFLAGS = -I ../@NETSPIRE_DIST@/src -pa ../@NETSPIRE_DIST@/ebin
 
-BEAMDIR = @prefix@/@libdir@/netspire/ebin
-
 all: $(BEAMS)
 
 $(OUTDIR)/%.beam: %.erl
 	@ERLC@ -W $(EFLAGS) -o $(OUTDIR) $<
-
-install:
-	install -d $(BEAMDIR)
-	install -m 644 $(BEAMS) $(BEAMDIR)
 
 clean:
 	rm -f $(BEAMS)

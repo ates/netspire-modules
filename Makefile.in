@@ -18,7 +18,7 @@ all-recursive clean-recursive distclean-recursive install-recursive:
 	(cd $$subdir && $(MAKE) $$target) || exit 1; \
 	done
 
-install: all install-recursive
+install: all
 	install -m 644 ebin/*.beam $(BEAMDIR)
 
 clean: clean-recursive
