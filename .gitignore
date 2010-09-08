@@ -1,4 +1,5 @@
 *.log
+ebin
 Makefile
 configure
 config.status
