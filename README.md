@@ -20,3 +20,12 @@ mod\_disconnect\_pod
 This should be added to the **modules** section of the netspire.conf:
     {mod_disconnect_pod, []}
 
+mod\_geoip
+----------
+
+    Provides interface to fastest way to lookup country code by IP address
+    Use GeoIP database from software77.net
+
+###Configuration
+This should be added to the **modules** section of the netspire.conf:
+    {mod_geoip, [{file, "/path/to/geoip.database"}]}
