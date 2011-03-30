@@ -16,4 +16,33 @@ stop() ->
 
 disconnect(_, UserName, SID, IP, NasSpec) ->
     Attrs = [{"User-Name", UserName}, {"Acct-Session-Id", SID}, {"Framed-IP-Address", IP}],
-    radclient:request(disconnect, NasSpec, Attrs).
+    case radclient:request(disconnect, NasSpec, Attrs) of
+        {ok, _} -> ok;
+        {failed, Attrs} ->
+            case radius:attribute_value("Error-Cause", Attrs) of
+                undefined -> ok;
+                Value ->
+                    format_error(Value)
+            end
+    end.
+
+%% As per RFC 3576 (Error-Cause attribute)
+format_error(Code) ->
+    case Code of
+        201 -> "Residual Session Context Removed";
+        202 -> "Invalid EAP Packet (Ignored)";
+        401 -> "Unsupported Attribute";
+        402 -> "Missing Attribute";
+        403 -> "NAS Identification Mismatch";
+        404 -> "Invalid Request";
+        405 -> "Unsupported Service";
+        406 -> "Unsupported Extension";
+        501 -> "Administratively Prohibited";
+        502 -> "Request Not Routable (Proxy)";
+        503 -> "Session Context Not Found";
+        504 -> "Session Context Not Removable";
+        505 -> "Other Proxy Processing Error";
+        506 -> "Resources Unavailable";
+        507 -> "Request Initiated";
+        _ -> "Unknown error"
+    end.
