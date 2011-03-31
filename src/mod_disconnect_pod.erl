@@ -22,9 +22,9 @@ disconnect(_, UserName, SID, IP, NasSpec) ->
     Attrs = [{"User-Name", UserName}, {"Acct-Session-Id", SID}, {"Framed-IP-Address", IP}],
     case radclient:request(disconnect, NasSpec, Attrs) of
         {ok, _} -> {ok, []};
-        {error, Attrs} ->
-            case radius:attribute_value("Error-Cause", Attrs) of
-                undefined -> {error, Attrs};
+        {error, A} ->
+            case radius:attribute_value("Error-Cause", A) of
+                undefined -> {error, A};
                 Value ->
                     {error, format_error(Value)}
             end
