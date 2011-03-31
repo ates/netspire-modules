@@ -108,7 +108,7 @@ for_each_line_in_file(Name, Proc, Acc) ->
         {ok, Device} ->
             for_each_line(Device, Proc, Acc);
         {error, Reason} ->
-            ?ERROR_MSG("Cannot open file ~s due to ~s~n", [Name, file:format(Reason)])
+            ?ERROR_MSG("Cannot open file ~s due to ~s~n", [Name, file:format_error(Reason)])
     end.
 
 for_each_line(Device, Proc, Acc) ->
