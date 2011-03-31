@@ -2,7 +2,11 @@
 
 -behaviour(gen_module).
 
--export([start/1, stop/0, disconnect/5]).
+%% API
+-export([disconnect/5]).
+
+%% gen_module callbacks
+-export([start/1, stop/0]).
 
 -include("netspire.hrl").
 
@@ -17,16 +21,16 @@ stop() ->
 disconnect(_, UserName, SID, IP, NasSpec) ->
     Attrs = [{"User-Name", UserName}, {"Acct-Session-Id", SID}, {"Framed-IP-Address", IP}],
     case radclient:request(disconnect, NasSpec, Attrs) of
-        {ok, _} -> ok;
-        {failed, Attrs} ->
+        {ok, _} -> {ok, []};
+        {error, Attrs} ->
             case radius:attribute_value("Error-Cause", Attrs) of
-                undefined -> ok;
+                undefined -> {error, Attrs};
                 Value ->
-                    format_error(Value)
+                    {error, format_error(Value)}
             end
     end.
 
-%% As per RFC 3576 (Error-Cause attribute)
+%% As per RFC 3576 (Error-Cause attribute values)
 format_error(Code) ->
     case Code of
         201 -> "Residual Session Context Removed";

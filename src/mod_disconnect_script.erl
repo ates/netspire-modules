@@ -9,7 +9,6 @@
 -export([start/1, stop/0]).
 
 -include("netspire.hrl").
--include("radius/radius.hrl").
 
 start(_Options) ->
     ?INFO_MSG("Starting dynamic module ~p~n", [?MODULE]),
@@ -25,7 +24,7 @@ disconnect(_, UserName, SID, IP, NasSpec) ->
     Cmd = string:join([Script, UserName, SID, inet_parse:ntoa(IP), inet_parse:ntoa(NasIP)], " "),
     case call_external_prog(Cmd) of
         {0, _} -> {ok, []};
-        {_, Output} -> {error, Output}
+        {_, Output} -> {error, string:strip(Output, right, $\n)}
     end.
 
 call_external_prog(Cmd) ->
